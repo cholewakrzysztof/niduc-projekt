@@ -58,15 +58,6 @@ Kiedy uznamy, że to co chcieliśmy dodać jest gotowe trzeba dokonać scalenia 
         c. Można zrobić Pull będąc na branchu main
 
 
-- ## Zaciągnięcie najnowszej wersji
-
-- ## Wrzucanie nowej wersji
-Robimy na jednym branchu (Jedna wspólna wersja kodu, będzie łatwiej), myślę, że nie ma sensu komplikować, dlatego wrzucanie kodu wygląda tak;
-
-        
-
-
-
 ## Przydatne linki
 - [[Dokumentacja projektowa]](https://politechnikawroclawska-my.sharepoint.com/:w:/g/personal/255388_student_pwr_edu_pl/EZ0jKhnu6CZEjW8B8oB3LSgBG8Bsag9R6G1qytx9Ozjwag?e=rbccZR&fbclid=IwAR279Xb0qSu60lP9wBdzZDmErzNBe9KSR_hIWR8m9qfqn9e3y_x5Dk2364w)
 
