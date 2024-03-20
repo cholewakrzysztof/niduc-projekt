@@ -1,0 +1,1 @@
+print("Tu sie bedzie dziac magia!")
