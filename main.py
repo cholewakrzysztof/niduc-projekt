@@ -2,6 +2,7 @@ import komm
 import random
 import numpy
 
+
 # Dane wejściowe
 def random_bits_array_generator(length):
     arr = [random.randint(0, 1) for i in range(0, length)]
@@ -46,6 +47,14 @@ print("Dane wyjściowe po przesyłaniu przez BSC:\n", output_bits)
 decoder_data = decoder(output_bits, mu, delta)
 print("Dane wyjściowe po dekodowaniu:\n", decoder_data)
 
+print('Sample object code execution')
+from SampleClass import SampleClass  # Class import
 
+sampleObj = SampleClass('sample', 15)
+sampleObjPlus = SampleClass('samplePlus', 20, 10)
 
+print(sampleObj)
+print(sampleObjPlus)
 
+print(sampleObj.sum_object())
+print(SampleClass.sum_static(15, 20))
