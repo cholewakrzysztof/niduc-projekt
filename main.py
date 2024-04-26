@@ -1,6 +1,8 @@
 import komm
 import random
 import numpy
+import TransmissionController
+from common.RawBitChain import RawBitChain
 
 
 # Dane wejściowe
@@ -58,3 +60,13 @@ print(sampleObjPlus)
 
 print(sampleObj.sum_object())
 print(SampleClass.sum_static(15, 20))
+
+transmissionController = TransmissionController.TransmissionController(mu, delta, error_probability)
+
+chain = RawBitChain(random_bits_array_generator(200))
+transmissionController.receive_data(chain)
+
+transmissionController.start_transmission()
+
+print(transmissionController.get_input())
+print(transmissionController.get_output())
