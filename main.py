@@ -1,7 +1,10 @@
-import komm
 import random
+
+import komm
 import numpy
+
 import TransmissionController
+from DataAnalyzer import DataAnalyzer
 from common.RawBitChain import RawBitChain
 
 
@@ -50,23 +53,19 @@ decoder_data = decoder(output_bits, mu, delta)
 print("Dane wyjściowe po dekodowaniu:\n", decoder_data)
 
 print('Sample object code execution')
-from SampleClass import SampleClass  # Class import
 
-sampleObj = SampleClass('sample', 15)
-sampleObjPlus = SampleClass('samplePlus', 20, 10)
+data_analyzer = DataAnalyzer()
 
-print(sampleObj)
-print(sampleObjPlus)
-
-print(sampleObj.sum_object())
-print(SampleClass.sum_static(15, 20))
-
-transmissionController = TransmissionController.TransmissionController(mu, delta, error_probability)
-
+controller = TransmissionController.TransmissionController(mu, delta, error_probability)
 chain = RawBitChain(random_bits_array_generator(200))
-transmissionController.receive_data(chain)
+controller.receive_data(chain)
+controller.start_transmission()
+print(controller.get_input())
+print(controller.get_output())
 
-transmissionController.start_transmission()
+data_analyzer.add_test_data(controller.length, controller.InBits, controller.OutBits)
 
-print(transmissionController.get_input())
-print(transmissionController.get_output())
+data_analyzer.save_report('C:\\Temp\\niduc\\results.csv')
+
+
+

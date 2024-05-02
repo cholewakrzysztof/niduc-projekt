@@ -16,6 +16,7 @@ class TransmissionController:  # Start of class definition
     decoder: BlockDecoder
     encoder: BlockEncoder
     channel: BinarySymmetricChannel
+    length: int = 0
     InBits: list[int]
     OutBits: numpy.ndarray
 
