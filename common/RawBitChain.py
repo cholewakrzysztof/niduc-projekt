@@ -9,4 +9,3 @@ class RawBitChain:
 
     def get_bits(self):
         return self.chain
-
