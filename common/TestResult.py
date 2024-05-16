@@ -11,14 +11,14 @@ class ErrorTypes(Enum):
 
 
 class TestResult:
-    in_bits: list[int]
+    in_bits: numpy.ndarray
     out_bits: numpy.ndarray
     length: int
     redundancy_bits_count: int
     error_type: ErrorTypes
     error_appeared: bool
 
-    def __init__(self, in_bits: list[int], out_bits: numpy.ndarray, length: int,
+    def __init__(self, in_bits: numpy.ndarray, out_bits: numpy.ndarray, length: int,
                  redundancy_bits_count: int, error_type: ErrorTypes):
         self.in_bits = in_bits
         self.out_bits = out_bits

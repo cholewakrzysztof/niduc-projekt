@@ -8,7 +8,7 @@ from common.TestResult import TestResult, ErrorTypes
 class DataAnalyzer:
     test_results: list[TestResult] = []
 
-    def add_test_data(self, length: int, in_bits: list[int], out_bits: numpy.ndarray):
+    def add_test_data(self, length: int, in_bits: numpy.ndarray, out_bits: numpy.ndarray):
         test_result = DataAnalyzer.analyze_test_data(length, in_bits, out_bits)
         self.test_results.append(test_result)
 

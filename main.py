@@ -65,7 +65,7 @@ print(controller.get_output())
 
 data_analyzer.add_test_data(controller.length, controller.InBits, controller.OutBits)
 
-data_analyzer.save_report('C:\\Temp\\niduc\\results.csv')
+data_analyzer.save_report('C:\\Users\\Admin\\Desktop\\NIDUC\\results.csv')
 
 
 

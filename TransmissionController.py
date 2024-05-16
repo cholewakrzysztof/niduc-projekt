@@ -1,5 +1,3 @@
-from json import decoder
-
 from komm import BlockDecoder
 from komm import BlockEncoder
 from komm import BCHCode
@@ -9,15 +7,16 @@ import numpy
 from common import RawBitChain
 import komm
 
+
 class TransmissionController:  # Start of class definition
 
-    #Properties
+    # Properties
     bch: BCHCode
     decoder: BlockDecoder
     encoder: BlockEncoder
     channel: BinarySymmetricChannel
     length: int = 0
-    InBits: list[int]
+    InBits: numpy.ndarray
     OutBits: numpy.ndarray
 
     def __init__(self, mu, delta, error_probability):  # Constructor
@@ -25,7 +24,6 @@ class TransmissionController:  # Start of class definition
         self.decoder = komm.BlockDecoder(self.bch)
         self.encoder = komm.BlockEncoder(self.bch)
         self.channel = komm.BinarySymmetricChannel(error_probability)
-        self.InBits = []
 
     def __str__(self):
         return f'TransmissionController object'
