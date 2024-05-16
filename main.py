@@ -34,12 +34,12 @@ def decoder(output_bits, mu, delta,):
 
 
 # Dane wejściowe
-input_bits = random_bits_array_generator(15)
+input_bits = random_bits_array_generator(32)
 print("Dane wejściowe:\n", input_bits)
 
 # Kodowanie danych BCH
-mu = 3  # Długość słowa kodowego
-delta = 7  # Długość danych
+mu = 5 # Długość słowa kodowego
+delta = 31  # Długość danych
 encoded_data = bch_encode(input_bits, mu, delta)
 print("Dane zakodowane BCHe:\n", encoded_data)
 
