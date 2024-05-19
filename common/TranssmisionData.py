@@ -2,28 +2,29 @@ import numpy
 
 from channels.ChannelInterface import ChannelInterface
 from coders.CoderInterface import CoderInterface
+from common.RawBitChain import RawBitChain
 
 
 class TranssmisionData(object):
-    in_bits: list[numpy.ndarray]
-    out_bits: list[numpy.ndarray]
-    channel_bits: list[numpy.ndarray]
+    in_packets: list[RawBitChain] = []
+    out_packets: list[RawBitChain] = []
+    channel_packets: list[RawBitChain] = []
     channel: ChannelInterface
     coder: CoderInterface
     packet_size: int
     message_size: int
 
     def __init__(self,
-                 in_b: [],
-                 out_b: [],
-                 channel_b: [],
+                 in_packets: list[RawBitChain],
+                 out_packets: list[RawBitChain],
+                 channel_packets: list[RawBitChain],
                  channel: ChannelInterface,
                  coder: CoderInterface,
                  packet_size: int,
                  message_size: int):
-        self.in_bits = in_b
-        self.out_bits = out_b
-        self.channel_bits = channel_b
+        self.in_packets = in_packets
+        self.out_packets = out_packets
+        self.channel_packets = channel_packets
         self.channel = channel
         self.coder = coder
         self.packet_size = packet_size

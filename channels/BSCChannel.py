@@ -4,24 +4,24 @@ from numpy import ndarray
 
 from channels.ChannelInterface import ChannelInterface
 from coders.CoderInterface import CoderInterface
+from common.RawBitChain import RawBitChain
 
 
 class BSCChannel(ChannelInterface):
     channel: BinarySymmetricChannel
-    encoded: []
+    encoded: RawBitChain
 
     def __init__(self, error_probability):
         self.channel = komm.BinarySymmetricChannel(error_probability)
-        self.encoded = []
 
     def __str__(self):
         return "BSCChannel"
 
-    def transmit(self, coder: CoderInterface, array: ndarray) -> ndarray:
-        encoded_data = coder.encode(array)
-        self.encoded.append(encoded_data)
+    def transmit(self, coder: CoderInterface, packet: RawBitChain) -> RawBitChain:
+        encoded_data = coder.encode(packet.chain)
+        self.encoded = RawBitChain(encoded_data)
         after_transmission = self.channel(encoded_data)
-        return coder.decode(after_transmission)
+        return RawBitChain(coder.decode(after_transmission))
 
-    def get_encoded(self) -> ndarray:
+    def get_encoded(self) -> RawBitChain:
         return self.encoded

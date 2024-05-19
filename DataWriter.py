@@ -13,7 +13,7 @@ class DataWriter:
     def save_to_file(report: Report, name: string):
         current_time = datetime.datetime.now()
         timestamp_str = current_time.strftime("%Y-%m-%d_%H%M%S")
-        file_name = f'C:\\Temp\\niduc\\{name}_results_{timestamp_str}.csv'
+        file_name = f'C:\\Users\\Admin\\Desktop\\NIDUC\\{name}_results_{timestamp_str}.csv'
         file_csv = open(file_name, 'w', newline='')
         writer = csv.writer(file_csv, delimiter=';')
         writer.writerow(['Coder', 'Channel', 'Packet Size', 'In', 'Out', 'Differences', 'Bit error rate'])
@@ -23,6 +23,7 @@ class DataWriter:
         sum_differences = 0
         packet_size = report.packet_size
         error_bit_rate = report.error_bit_rate
+        print("Warning: hardcoded error_bit_rate")
 
         for result in report.test_results:
             in_packet = result.in_bits
