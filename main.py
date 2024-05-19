@@ -1,10 +1,3 @@
-import csv
-import datetime
-import random
-
-import komm
-import numpy
-
 import TransmissionController
 from DataAnalyzer import DataAnalyzer
 from DataWriter import DataWriter
@@ -16,12 +9,13 @@ from coders.ReedSolomonCoder import ReedSolomonCoder
 from coders.SingleParityCheckCode import SingleParityCheckCode
 from data.DataGenerator import DataGenerator
 
-def test_transsmision(controller, channel, coder, packets):
-    controller.set_channel(channel)
-    controller.set_coder(coder)
-    controller.set_input(packets)
-    controller.start_transmission()
-    data_analyzer.get_transmission_data(controller.get_transmission_data())
+
+def test_transmission(controller_f, channel_, coder_f, packets_f):
+    controller_f.set_channel(channel_)
+    controller_f.set_coder(coder_f)
+    controller_f.set_input(packets_f)
+    controller_f.start_transmission()
+    data_analyzer.get_transmission_data(controller_f.get_transmission_data())
     data_writer.save_to_file(data_analyzer.get_report(), "test1")
 
 # Dane wejściowe
@@ -45,15 +39,15 @@ channel = BSCChannel(error_probability)
 mu = 3
 delta = 7
 coder = BCHCoder(mu, delta)
-test_transsmision(controller, channel, coder, packets)
+test_transmission(controller, channel, coder, packets)
 
 mu = 3
 coder = HammingCode(mu)
-test_transsmision(controller, channel, coder, packets)
+test_transmission(controller, channel, coder, packets)
 
 n = packet_size + 1
 coder = SingleParityCheckCode(n)
-test_transsmision(controller, channel, coder, packets)
+test_transmission(controller, channel, coder, packets)
 
 
 p = 0.1  # Prawdopodobieństwo przejścia ze stanu dobrego do złego
@@ -64,4 +58,4 @@ channel = GilbertElliottChannel(p, r, k, h)
 n = packet_size + 3
 k = packet_size
 coder = ReedSolomonCoder(n, k)
-test_transsmision(controller, channel, coder, packets)
+test_transmission(controller, channel, coder, packets)

@@ -10,7 +10,9 @@ class DataGenerator:
 
     def reader(self, file_path):
         if not os.path.exists(file_path) or os.path.getsize(file_path) == 0:
-            choice = input("Plik nie istnieje. Czy chcesz wygenerować (L)osową tablicę czy wprowadzić (W)łasne dane? ").strip().upper()
+            choice = input("Plik nie istnieje. "
+                           "Czy chcesz wygenerować (L)osową tablicę "
+                           "czy wprowadzić (W)łasne dane? ").strip().upper()
             if choice == 'L':
                 length = int(input("Wprowadź długość ciągu danych: "))
                 data = self.generate_random_data(length)
@@ -36,7 +38,8 @@ class DataGenerator:
             char_array = list(data)
             self.bit_chain = ''.join([bin(ord(char))[2:].zfill(8) for char in char_array])
 
-    def generate_random_data(self, length):
+    @staticmethod
+    def generate_random_data(length):
         return ''.join(random.choice('01') for _ in range(length))
 
     def split_into_packets(self, packet_size):
@@ -58,7 +61,9 @@ class DataGenerator:
             print(f"Packet {i + 1}: {packet.chain}")
 
     def data_generator(self):
-        file_path = input("Jeśli chcesz wprowadzić dane z pliku, wprowadź nazwę pliku, w przeciwnym razie zostaw puste: ")
+        file_path = input("Jeśli chcesz wprowadzić dane z pliku, "
+                          "wprowadź nazwę pliku, w przeciwnym razie "
+                          "zostaw puste: ")
         self.reader(file_path)
 
         packet_size = int(input("Wprowadź rozmiar pakietu: "))

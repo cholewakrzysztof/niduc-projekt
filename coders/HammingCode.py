@@ -1,7 +1,7 @@
 import komm
 from numpy import ndarray
-
 from coders.CoderInterface import CoderInterface
+
 
 class HammingCode(CoderInterface):
     mu = 3

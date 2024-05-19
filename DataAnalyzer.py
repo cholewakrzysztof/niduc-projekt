@@ -1,11 +1,8 @@
 import numpy
-
-from DataWriter import DataWriter
 from common.NumUtils import NumUtils
-from common.RawBitChain import RawBitChain
 from common.Report import Report
 from common.TestResult import TestResult, ErrorTypes
-from common.TranssmisionData import TranssmisionData
+from common.TransmissionData import TransmissionData
 from data.DataComparator import DataComparator
 
 
@@ -14,8 +11,7 @@ class DataAnalyzer:
     report: Report
     total_differences: int = 0
 
-
-    def get_transmission_data(self, data: TranssmisionData):
+    def get_transmission_data(self, data: TransmissionData):
         self.total_differences = 0
 
         for idx in range(len(data.in_packets)):
@@ -59,5 +55,3 @@ class DataAnalyzer:
 
     def get_report(self):
         return self.report
-
-

@@ -1,11 +1,9 @@
-import numpy
-
 from channels.ChannelInterface import ChannelInterface
 from coders.CoderInterface import CoderInterface
 from common.RawBitChain import RawBitChain
 
 
-class TranssmisionData(object):
+class TransmissionData(object):
     in_packets: list[RawBitChain] = []
     out_packets: list[RawBitChain] = []
     channel_packets: list[RawBitChain] = []

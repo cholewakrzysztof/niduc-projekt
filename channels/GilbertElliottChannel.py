@@ -1,6 +1,5 @@
 import numpy as np
 from numpy.random import choice
-
 from channels.ChannelInterface import ChannelInterface
 from coders.CoderInterface import CoderInterface
 from common.RawBitChain import RawBitChain

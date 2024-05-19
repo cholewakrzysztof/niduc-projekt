@@ -2,9 +2,8 @@ from channels.BSCChannel import BSCChannel
 from channels.ChannelInterface import ChannelInterface
 from coders.BCHCoder import BCHCoder
 from coders.CoderInterface import CoderInterface
-from coders.HammingCode import HammingCode
 from common.RawBitChain import RawBitChain
-from common.TranssmisionData import TranssmisionData
+from common.TransmissionData import TransmissionData
 
 
 class TransmissionController:  # Start of class definition
@@ -20,11 +19,7 @@ class TransmissionController:  # Start of class definition
     packet_size: int
     message_size: int
 
-    # Constructor with interaction
-    def __init__(self):
-        print("Initializing TransmissionController")
-
-    def __init__(self, channel: ChannelInterface = BSCChannel, coder: CoderInterface = BCHCoder):  # Constructor without interaction
+    def __init__(self, channel: ChannelInterface = BSCChannel, coder: CoderInterface = BCHCoder):
         self.channel = channel
         self.coder = coder
         self.channel_packets = []
@@ -47,7 +42,7 @@ class TransmissionController:  # Start of class definition
             self.output_packets.append(received_packet)
 
     def get_transmission_data(self):
-        return TranssmisionData(self.input_packets,
+        return TransmissionData(self.input_packets,
                                 self.output_packets,
                                 self.channel_packets,
                                 self.channel,
@@ -65,4 +60,3 @@ class TransmissionController:  # Start of class definition
 
     def get_channel_bits(self):
         return self.channel_packets
-

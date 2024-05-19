@@ -1,5 +1,4 @@
 from enum import Enum
-
 import numpy
 
 
@@ -42,4 +41,3 @@ class TestResult:
                 self.error_type,
                 self.error_appeared,
                 self.differences_count]
-

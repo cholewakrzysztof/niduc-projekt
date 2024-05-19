@@ -1,5 +1,3 @@
-import string
-
 from channels.ChannelInterface import ChannelInterface
 from coders.CoderInterface import CoderInterface
 from common.TestResult import TestResult
@@ -26,7 +24,3 @@ class Report:
         self.message_size = message_size
         self.packet_size = packet_size
         self.error_bit_rate = error_bit_rate
-
-
-
-

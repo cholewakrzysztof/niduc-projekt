@@ -1,10 +1,7 @@
 import csv
 import datetime
 import string
-
-from common.NumUtils import NumUtils
 from common.Report import Report
-from data.DataComparator import DataComparator
 
 
 class DataWriter:

@@ -1,7 +1,5 @@
 import komm
 from komm import BinarySymmetricChannel
-from numpy import ndarray
-
 from channels.ChannelInterface import ChannelInterface
 from coders.CoderInterface import CoderInterface
 from common.RawBitChain import RawBitChain
