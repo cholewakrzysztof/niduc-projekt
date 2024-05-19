@@ -25,7 +25,9 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
     data_analyzer.get_transmission_data(controller.get_transmission_data())
 
     data_writer = DataWriter()
-    data_writer.save_to_file(data_analyzer.get_report(), name)
+    data_writer.save_to_file(data_analyzer.get_report(),
+                             name,
+                             "C:\\Users\\Admin\\Desktop\\NIDUC")  # f'{path}\\{name}_{timestamp_str}.csv'
 
 
 message_size = 64

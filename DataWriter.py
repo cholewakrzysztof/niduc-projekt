@@ -7,10 +7,10 @@ from common.Report import Report
 class DataWriter:
 
     @staticmethod
-    def save_to_file(report: Report, name: string):
+    def save_to_file(report: Report, name: string, path: string):
         current_time = datetime.datetime.now()
         timestamp_str = current_time.strftime("%Y-%m-%d_%H%M%S")
-        file_name = f'C:\\Users\\Admin\\Desktop\\NIDUC\\{name}_results_{timestamp_str}.csv'
+        file_name = f'{path}\\{name}_{timestamp_str}.csv'
         file_csv = open(file_name, 'w', newline='')
         writer = csv.writer(file_csv, delimiter=';')
         writer.writerow(['Coder', 'Channel', 'Packet Size', 'In', 'Out', 'Differences', 'Bit error rate'])
