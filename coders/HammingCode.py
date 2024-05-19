@@ -1,7 +1,7 @@
 import komm
 from numpy import ndarray
-
 from coders.CoderInterface import CoderInterface
+
 
 class HammingCode(CoderInterface):
     mu = 3
@@ -12,7 +12,7 @@ class HammingCode(CoderInterface):
     def __str__(self):
         return "HammingCoder"
 
-    def encode(self, array) -> ndarray:
+    def encode(self, array: ndarray) -> ndarray:
         hamm = komm.HammingCode(self.mu)
         encoder = komm.BlockEncoder(hamm)
         encoded_data = encoder(array)

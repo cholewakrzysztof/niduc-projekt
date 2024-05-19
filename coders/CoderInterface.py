@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
-
 from numpy import ndarray
 
 
 class CoderInterface(ABC):
 
     @abstractmethod
-    def encode(self, array) -> ndarray:
+    def encode(self, array: ndarray) -> ndarray:
         pass
 
     @abstractmethod

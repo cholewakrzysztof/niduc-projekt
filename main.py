@@ -1,71 +1,60 @@
-import random
-
-import komm
-import numpy
-
 import TransmissionController
 from DataAnalyzer import DataAnalyzer
-from common.RawBitChain import RawBitChain
+from DataWriter import DataWriter
+from channels.BSCChannel import BSCChannel
+from channels.GilbertElliottChannel import GilbertElliottChannel
+from coders.BCHCoder import BCHCoder
+from coders.HammingCode import HammingCode
+from coders.ReedSolomonCoder import ReedSolomonCoder
+from coders.SingleParityCheckCode import SingleParityCheckCode
+from data.DataGenerator import DataGenerator
 
 
-# Dane wejściowe
-def random_bits_array_generator(length):
-    arr = [random.randint(0, 1) for i in range(0, length)]
-    return numpy.array(arr)
+def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
+    data_generator = DataGenerator()
+    data_generator.generate_data(message_size_, packet_size_)
+    packets = data_generator.get_packets()
 
-# Kodowanie danych BCH
-def bch_encode(input_bits, mu, delta):
-    bch = komm.BCHCode(mu, delta)
-    encoder = komm.BlockEncoder(bch)
-    encoded_data = encoder(input_bits)
-    return encoded_data
+    controller = TransmissionController.TransmissionController()
+    controller.set_channel(channel_)
+    controller.set_coder(coder_f)
+    controller.set_input(packets)
+    controller.start_transmission()
 
-# Symulacja przesyłu przez BSC
-def bsc_simulation(encoded_data, error_probability):
-    channel = komm.BinarySymmetricChannel(error_probability)
-    return channel(encoded_data)
+    data_analyzer = DataAnalyzer()
+    data_analyzer.get_transmission_data(controller.get_transmission_data())
 
-# Dekodowanie danych
-def decoder(output_bits, mu, delta,):
-    bch = komm.BCHCode(mu, delta)
-    decoder = komm.BlockDecoder(bch)
-    decoder_data = decoder(output_bits)
-    return decoder_data
+    data_writer = DataWriter()
+    data_writer.save_to_file(data_analyzer.get_report(),
+                             name,
+                             "C:\\Users\\Admin\\Desktop\\NIDUC")  # f'{path}\\{name}_{timestamp_str}.csv'
 
 
-# Dane wejściowe
-input_bits = random_bits_array_generator(32)
-print("Dane wejściowe:\n", input_bits)
+message_size = 64
+packet_size = 8
 
-# Kodowanie danych BCH
-mu = 5 # Długość słowa kodowego
-delta = 31  # Długość danych
-encoded_data = bch_encode(input_bits, mu, delta)
-print("Dane zakodowane BCHe:\n", encoded_data)
+error_probability = 0.1
+channel = BSCChannel(error_probability)
 
-# Symulacja przesyłu przez BSC
-error_probability = 0.1  # Prawdopodobieństwo błędu
-output_bits = bsc_simulation(encoded_data, error_probability)
-print("Dane wyjściowe po przesyłaniu przez BSC:\n", output_bits)
+mu = 3
+delta = 7
+coder = BCHCoder(mu, delta)
+test_transmission(channel, coder, message_size, packet_size, "bch")
 
-# Dekodowanie danych
-decoder_data = decoder(output_bits, mu, delta)
-print("Dane wyjściowe po dekodowaniu:\n", decoder_data)
+mu = 3
+coder = HammingCode(mu)
+test_transmission(channel, coder, message_size, packet_size, "hamming")
 
-print('Sample object code execution')
+n = packet_size + 1
+coder = SingleParityCheckCode(n)
+test_transmission(channel, coder, message_size, packet_size, "parzystosc")
 
-data_analyzer = DataAnalyzer()
-
-controller = TransmissionController.TransmissionController(mu, delta, error_probability)
-chain = RawBitChain(random_bits_array_generator(200))
-controller.receive_data(chain)
-controller.start_transmission()
-print(controller.get_input())
-print(controller.get_output())
-
-data_analyzer.add_test_data(controller.length, controller.InBits, controller.OutBits)
-
-data_analyzer.save_report('C:\\Users\\Admin\\Desktop\\NIDUC\\results.csv')
-
-
-
+p = 0.1  # Prawdopodobieństwo przejścia ze stanu dobrego do złego
+r = 0.2  # Prawdopodobieństwo przejścia ze stanu złego do dobrego
+k = 0.9  # Prawdopodobieństwo poprawnej transmisji w stanie dobrym
+h = 0.1  # Prawdopodobieństwo poprawnej transmisji w stanie złym
+channel = GilbertElliottChannel(p, r, k, h)
+n = packet_size + 3
+k = packet_size
+coder = ReedSolomonCoder(n, k)
+test_transmission(channel, coder, message_size, packet_size, "reedsolomon")
