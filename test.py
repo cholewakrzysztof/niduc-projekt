@@ -37,7 +37,7 @@ packets = DataSequencer.divide_into_subsequences(message, packet_size)
 
 current_time = datetime.datetime.now()
 timestamp_str = current_time.strftime("%Y-%m-%d_%H%M%S")
-file_name = f'C:\\Temp\\niduc\\results_{timestamp_str}.csv'
+file_name = f'C:\\Users\\Admin\\Desktop\\NIDUC\\esults_{timestamp_str}.csv'
 file_csv = open(file_name, 'w', newline='')
 writer = csv.writer(file_csv, delimiter=';')
 writer.writerow(['Coder', 'Channel', 'Packet Size', 'In', 'Out', 'Differences', 'Bit error rate'])
