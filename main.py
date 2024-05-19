@@ -1,3 +1,5 @@
+import csv
+import datetime
 import random
 
 import komm
@@ -5,67 +7,69 @@ import numpy
 
 import TransmissionController
 from DataAnalyzer import DataAnalyzer
-from common.RawBitChain import RawBitChain
-
-
-# Dane wejściowe
-def random_bits_array_generator(length):
-    arr = [random.randint(0, 1) for i in range(0, length)]
-    return numpy.array(arr)
-
-# Kodowanie danych BCH
-def bch_encode(input_bits, mu, delta):
-    bch = komm.BCHCode(mu, delta)
-    encoder = komm.BlockEncoder(bch)
-    encoded_data = encoder(input_bits)
-    return encoded_data
-
-# Symulacja przesyłu przez BSC
-def bsc_simulation(encoded_data, error_probability):
-    channel = komm.BinarySymmetricChannel(error_probability)
-    return channel(encoded_data)
-
-# Dekodowanie danych
-def decoder(output_bits, mu, delta,):
-    bch = komm.BCHCode(mu, delta)
-    decoder = komm.BlockDecoder(bch)
-    decoder_data = decoder(output_bits)
-    return decoder_data
-
+from DataWriter import DataWriter
+from channels.BSCChannel import BSCChannel
+from channels.GilbertElliottChannel import GilbertElliottChannel
+from coders.BCHCoder import BCHCoder
+from coders.HammingCode import HammingCode
+from coders.ReedSolomonCoder import ReedSolomonCoder
+from coders.SingleParityCheckCode import SingleParityCheckCode
+from data.DataGenerator import DataGenerator
 
 # Dane wejściowe
-input_bits = random_bits_array_generator(32)
-print("Dane wejściowe:\n", input_bits)
+message_size = 64
+#message = DataGenerator.random_bits_array_generator(message_size)
+packet_size = 8
+#packets = DataSequencer.divide_into_subsequences(message, packet_size)
 
-# Kodowanie danych BCH
-mu = 5 # Długość słowa kodowego
-delta = 31  # Długość danych
-encoded_data = bch_encode(input_bits, mu, delta)
-print("Dane zakodowane BCHe:\n", encoded_data)
+data_generator = DataGenerator()
+data_generator.generate_data(message_size, packet_size)
+packets = data_generator.get_packets()
 
-# Symulacja przesyłu przez BSC
-error_probability = 0.1  # Prawdopodobieństwo błędu
-output_bits = bsc_simulation(encoded_data, error_probability)
-print("Dane wyjściowe po przesyłaniu przez BSC:\n", output_bits)
-
-# Dekodowanie danych
-decoder_data = decoder(output_bits, mu, delta)
-print("Dane wyjściowe po dekodowaniu:\n", decoder_data)
-
-print('Sample object code execution')
+print(packets)
 
 data_analyzer = DataAnalyzer()
+data_writer = DataWriter()
 
-controller = TransmissionController.TransmissionController(mu, delta, error_probability)
-chain = RawBitChain(random_bits_array_generator(200))
-controller.receive_data(chain)
-controller.start_transmission()
-print(controller.get_input())
-print(controller.get_output())
+error_probability = 0.1
+channel = BSCChannel(error_probability)
 
-data_analyzer.add_test_data(controller.length, controller.InBits, controller.OutBits)
+mu = 3
+delta = 7
+coder = BCHCoder(mu, delta)
 
-data_analyzer.save_report('C:\\Users\\Admin\\Desktop\\NIDUC\\results.csv')
+transmission_controller = TransmissionController.TransmissionController()
+transmission_controller.set_channel(channel)
+transmission_controller.set_coder(coder)
+transmission_controller.set_input(packets)
+
+transmission_controller.start_transmission()
+
+
+data_analyzer.get_transmission_data(transmission_controller.get_transmission_data())
+
+data_writer.save_to_file(data_analyzer.get_report(),"test1")
+
+
+mu = 3
+coder = HammingCode(mu)
+#test_coder(message_size, coder, channel, packets, writer)
+
+n = packet_size + 1
+coder = SingleParityCheckCode(n)
+#test_coder(message_size, coder, channel, packets, writer)
+
+p = 0.1  # Prawdopodobieństwo przejścia ze stanu dobrego do złego
+r = 0.2  # Prawdopodobieństwo przejścia ze stanu złego do dobrego
+k = 0.9  # Prawdopodobieństwo poprawnej transmisji w stanie dobrym
+h = 0.1  # Prawdopodobieństwo poprawnej transmisji w stanie złym
+channel = GilbertElliottChannel(p, r, k, h)
+
+n = packet_size + 3
+k = packet_size
+coder = ReedSolomonCoder(n, k)
+#test_coder(message_size, coder, channel, packets, writer)
+
 
 
 

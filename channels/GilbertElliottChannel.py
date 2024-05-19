@@ -6,6 +6,9 @@ from coders.CoderInterface import CoderInterface
 
 
 class GilbertElliottChannel(ChannelInterface):
+
+    encoded: []
+
     def __init__(self, p, r, k, h):
         self.p = p  # Prawdopodobieństwo przejścia ze stanu dobrego do złego
         self.r = r  # Prawdopodobieństwo przejścia ze stanu złego do dobrego
@@ -17,7 +20,7 @@ class GilbertElliottChannel(ChannelInterface):
         return "GilbertElliottChannel"
 
     def transmit(self, coder: CoderInterface, array: np.ndarray) -> np.ndarray:
-        transmitted_array = np.zeros_like(array)
+        encoded = np.zeros_like(array)
         for i, bit in enumerate(array):
             if self.state == 'G':
                 error_prob = 1 - self.k  # Prawdopodobieństwo błędu w stanie dobrym
@@ -26,9 +29,9 @@ class GilbertElliottChannel(ChannelInterface):
 
             if choice([True, False], p=[error_prob, 1 - error_prob]):
                 # Błąd wystąpił
-                transmitted_array[i] = 1 - bit  # Odwracamy bit
+                encoded[i] = 1 - bit  # Odwracamy bit
             else:
-                transmitted_array[i] = bit
+                encoded[i] = bit
 
             # Aktualizacja stanu kanału
             if self.state == 'G':
@@ -38,4 +41,7 @@ class GilbertElliottChannel(ChannelInterface):
                 if choice([True, False], p=[self.r, 1 - self.r]):
                     self.state = 'G'  # Przejście do stanu dobrego
 
-        return transmitted_array
+        return encoded
+
+    def get_encoded(self) -> np.ndarray:
+        return self.encoded

@@ -11,8 +11,8 @@ from coders.ReedSolomonCoder import ReedSolomonCoder
 from coders.SingleParityCheckCode import SingleParityCheckCode
 from common.NumUtils import NumUtils
 from data.DataComparator import DataComparator
-from data.DataGenerator import DataGenerator
 from data.DataSequencer import DataSequencer
+from data.DataGenerator import DataGenerator
 
 
 def test_coder(message_size: int, coder: CoderInterface, channel: ChannelInterface, packets: list, writer):
@@ -30,10 +30,13 @@ def test_coder(message_size: int, coder: CoderInterface, channel: ChannelInterfa
 
 
 message_size = 64
-message = DataGenerator.random_bits_array_generator(message_size)
-
+#message = DataGenerator.random_bits_array_generator(message_size)
 packet_size = 8
-packets = DataSequencer.divide_into_subsequences(message, packet_size)
+#packets = DataSequencer.divide_into_subsequences(message, packet_size)
+
+data_generator = DataGenerator()
+data_generator.generate_data(message_size, packet_size)
+packets = data_generator.get_packets()
 
 current_time = datetime.datetime.now()
 timestamp_str = current_time.strftime("%Y-%m-%d_%H%M%S")

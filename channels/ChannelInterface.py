@@ -9,3 +9,7 @@ class ChannelInterface:
     def transmit(self, coder: CoderInterface, array: ndarray) -> ndarray:
         pass
 
+    @abstractmethod
+    def get_encoded(self) -> ndarray:
+        pass
+
