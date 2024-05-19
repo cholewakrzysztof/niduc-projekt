@@ -12,7 +12,7 @@ class HammingCode(CoderInterface):
     def __str__(self):
         return "HammingCoder"
 
-    def encode(self, array) -> ndarray:
+    def encode(self, array: ndarray) -> ndarray:
         hamm = komm.HammingCode(self.mu)
         encoder = komm.BlockEncoder(hamm)
         encoded_data = encoder(array)

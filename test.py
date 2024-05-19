@@ -51,7 +51,7 @@ channel = BSCChannel(error_probability)
 mu = 3
 delta = 7
 coder = BCHCoder(mu, delta)
-test_coder(message_size, coder, channel, packets, writer)
+#test_coder(message_size, coder, channel, packets, writer)
 
 mu = 3
 coder = HammingCode(mu)
