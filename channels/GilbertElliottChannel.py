@@ -20,7 +20,7 @@ class GilbertElliottChannel(ChannelInterface):
         return "GilbertElliottChannel"
 
     def transmit(self, coder: CoderInterface, packet: RawBitChain) -> RawBitChain:
-        encoded = RawBitChain(np.zeros_like(packet.chain))
+        self.encoded = RawBitChain(np.zeros_like(packet.chain))
         for i, bit in enumerate(packet.chain):
             if self.state == 'G':
                 error_prob = 1 - self.k  # Prawdopodobieństwo błędu w stanie dobrym
@@ -29,9 +29,9 @@ class GilbertElliottChannel(ChannelInterface):
 
             if choice([True, False], p=[error_prob, 1 - error_prob]):
                 # Błąd wystąpił
-                encoded.chain[i] = 1 - bit  # Odwracamy bit
+                self.encoded.chain[i] = 1 - bit  # Odwracamy bit
             else:
-                encoded.chain[i] = bit
+                self.encoded.chain[i] = bit
 
             # Aktualizacja stanu kanału
             if self.state == 'G':
@@ -41,7 +41,7 @@ class GilbertElliottChannel(ChannelInterface):
                 if choice([True, False], p=[self.r, 1 - self.r]):
                     self.state = 'G'  # Przejście do stanu dobrego
 
-        return encoded
+        return self.encoded
 
     def get_encoded(self) -> RawBitChain:
         return self.encoded

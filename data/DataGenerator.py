@@ -78,9 +78,11 @@ class DataGenerator:
     def get_packets(self):
         if len(self.packets) < 1:
             print("Warning: packets number is 0")
-        return self.packets
+        return [*self.packets]
 
 
 if __name__ == "__main__":
     generator = DataGenerator()
-    generator.data_generator()
+    generator.generate_random_data(64)
+    a = generator.get_packets()
+    print(a)

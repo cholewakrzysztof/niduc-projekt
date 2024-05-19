@@ -1,5 +1,3 @@
-from channels.ChannelInterface import ChannelInterface
-from coders.CoderInterface import CoderInterface
 from common.RawBitChain import RawBitChain
 
 
@@ -7,8 +5,8 @@ class TransmissionData(object):
     in_packets: list[RawBitChain] = []
     out_packets: list[RawBitChain] = []
     channel_packets: list[RawBitChain] = []
-    channel: ChannelInterface
-    coder: CoderInterface
+    channel: str
+    coder: str
     packet_size: int
     message_size: int
 
@@ -16,8 +14,8 @@ class TransmissionData(object):
                  in_packets: list[RawBitChain],
                  out_packets: list[RawBitChain],
                  channel_packets: list[RawBitChain],
-                 channel: ChannelInterface,
-                 coder: CoderInterface,
+                 channel: str,
+                 coder: str,
                  packet_size: int,
                  message_size: int):
         self.in_packets = in_packets

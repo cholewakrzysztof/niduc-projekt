@@ -45,8 +45,8 @@ class TransmissionController:  # Start of class definition
         return TransmissionData(self.input_packets,
                                 self.output_packets,
                                 self.channel_packets,
-                                self.channel,
-                                self.coder,
+                                str(self.channel),
+                                str(self.coder),
                                 self.packet_size,
                                 self.message_size)
 
