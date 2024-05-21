@@ -28,7 +28,7 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
     data_writer = DataWriter()
     data_writer.save_to_file(data_analyzer.get_report(),
                              name,
-                             "C:\\Users\\Admin\\Desktop\\NIDUC")  # f'{path}\\{name}_{timestamp_str}.csv'
+                             "C:\\Test\\NIDUC")  # f'{path}\\{name}_{timestamp_str}.csv'
 
 
 harvester = CombinationHarvester(list(range(8, 32, 8)), list(range(2, 9, 1)), list([3, 5, 7]))

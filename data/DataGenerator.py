@@ -5,7 +5,7 @@ from common.RawBitChain import RawBitChain
 
 class DataGenerator:
     def __init__(self):
-        self.bit_chain = ""
+        self.bit_chain = []
         self.packets = []
 
     def reader(self, file_path):
@@ -29,18 +29,18 @@ class DataGenerator:
                            "(B)itów? ").strip().upper()
             if choice == 'C':
                 char_array = list(data)
-                self.bit_chain = ''.join([bin(ord(char))[2:].zfill(8) for char in char_array])
+                self.bit_chain = [int(bit) for char in char_array for bit in bin(ord(char))[2:].zfill(8)]
             elif choice == 'B':
-                self.bit_chain = data
+                self.bit_chain = [int(bit) for bit in data]
             else:
                 raise ValueError("Nieprawidłowa opcja")
         else:
             char_array = list(data)
-            self.bit_chain = ''.join([bin(ord(char))[2:].zfill(8) for char in char_array])
+            self.bit_chain = [int(bit) for char in char_array for bit in bin(ord(char))[2:].zfill(8)]
 
     @staticmethod
     def generate_random_data(length):
-        return ''.join(random.choice('01') for _ in range(length))
+        return [int(bit) for bit in ''.join(random.choice('01') for _ in range(length))]
 
     def split_into_packets(self, packet_size):
         if packet_size <= 0:
@@ -51,14 +51,14 @@ class DataGenerator:
         if padding > 0:
             print("Uwaga: Dopełniono ostatni pakiet zerami.")
 
-        padded_bit_chain = self.bit_chain + '0' * padding
+        padded_bit_chain = self.bit_chain + [0] * padding
         self.packets = [RawBitChain(padded_bit_chain[i:i + packet_size]) for i in
                         range(0, len(padded_bit_chain), packet_size)]
 
     def display_packets(self):
         print("Pakiety:")
         for i, packet in enumerate(self.packets):
-            print(f"Packet {i + 1}: {packet.chain}")
+            print(f"Packet {i+1}: {packet.chain}")
 
     def data_generator(self):
         file_path = input("Jeśli chcesz wprowadzić dane z pliku, "
@@ -83,6 +83,4 @@ class DataGenerator:
 
 if __name__ == "__main__":
     generator = DataGenerator()
-    generator.generate_random_data(64)
-    a = generator.get_packets()
-    print(a)
+    generator.data_generator()
