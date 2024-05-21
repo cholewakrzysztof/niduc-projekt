@@ -50,10 +50,16 @@ class TransmissionController:  # Start of class definition
                                 self.packet_size,
                                 self.message_size)
 
-    def set_input(self, packets: list[RawBitChain]):
+    def set_packets(self, packets: list[RawBitChain]):
         self.input_packets = packets
         self.packet_size = len(packets[0].chain)
         self.message_size = len(packets) * self.packet_size
+
+    def set_packet(self, packet: RawBitChain):
+        self.input_packets = []
+        self.input_packets.append(packet)
+        self.packet_size = len(packet.chain)
+        self.message_size = len(packet.chain) * self.packet_size
 
     def get_input_packets(self):
         return self.input_packets

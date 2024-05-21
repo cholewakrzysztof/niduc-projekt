@@ -1,6 +1,7 @@
 import TransmissionController
 from DataAnalyzer import DataAnalyzer
 from DataWriter import DataWriter
+from CombinationHarvester import CombinationHarvester
 from channels.BSCChannel import BSCChannel
 from channels.GilbertElliottChannel import GilbertElliottChannel
 from coders.BCHCoder import BCHCoder
@@ -18,7 +19,7 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
     controller = TransmissionController.TransmissionController()
     controller.set_channel(channel_)
     controller.set_coder(coder_f)
-    controller.set_input(packets)
+    controller.set_packets(packets)
     controller.start_transmission()
 
     data_analyzer = DataAnalyzer()
@@ -30,6 +31,9 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
                              "C:\\Users\\Admin\\Desktop\\NIDUC")  # f'{path}\\{name}_{timestamp_str}.csv'
 
 
+harvester = CombinationHarvester(list(range(8, 32, 8)), list(range(2, 9, 1)), list([3, 5, 7]))
+harvester.harvest()
+
 message_size = 64
 packet_size = 8
 
@@ -39,15 +43,18 @@ channel = BSCChannel(error_probability)
 mu = 3
 delta = 7
 coder = BCHCoder(mu, delta)
-test_transmission(channel, coder, message_size, packet_size, "bch")
+if harvester.check_combination(coder, packet_size, mu, delta):
+    test_transmission(channel, coder, message_size, packet_size, "bch")
 
 mu = 3
 coder = HammingCode(mu)
-test_transmission(channel, coder, message_size, packet_size, "hamming")
+if harvester.check_combination(coder, packet_size ,mu,delta):
+    test_transmission(channel, coder, message_size, packet_size, "hamming")
 
 n = packet_size + 1
 coder = SingleParityCheckCode(n)
-test_transmission(channel, coder, message_size, packet_size, "parzystosc")
+if harvester.check_combination(coder, n ,mu,delta):
+    test_transmission(channel, coder, message_size, packet_size, "parzystosc")
 
 p = 0.1  # Prawdopodobieństwo przejścia ze stanu dobrego do złego
 r = 0.2  # Prawdopodobieństwo przejścia ze stanu złego do dobrego
@@ -57,4 +64,5 @@ channel = GilbertElliottChannel(p, r, k, h)
 n = packet_size + 3
 k = packet_size
 coder = ReedSolomonCoder(n, k)
-test_transmission(channel, coder, message_size, packet_size, "reedsolomon")
+if harvester.check_combination(coder, n ,mu,delta):
+    test_transmission(channel, coder, message_size, packet_size, "reedsolomon")
