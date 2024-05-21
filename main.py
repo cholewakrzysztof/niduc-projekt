@@ -1,6 +1,7 @@
 import TransmissionController
 from DataAnalyzer import DataAnalyzer
 from DataWriter import DataWriter
+from CombinationHarvester import CombinationHarvester
 from channels.BSCChannel import BSCChannel
 from channels.GilbertElliottChannel import GilbertElliottChannel
 from coders.BCHCoder import BCHCoder
@@ -18,7 +19,7 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
     controller = TransmissionController.TransmissionController()
     controller.set_channel(channel_)
     controller.set_coder(coder_f)
-    controller.set_input(packets)
+    controller.set_packets(packets)
     controller.start_transmission()
 
     data_analyzer = DataAnalyzer()
@@ -29,6 +30,9 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
                              name,
                              "C:\\Users\\Admin\\Desktop\\NIDUC")  # f'{path}\\{name}_{timestamp_str}.csv'
 
+
+harvester = CombinationHarvester(list(range(8, 32, 8)), list(range(2, 9, 1)), list([3, 5, 7]))
+harvester.harvest()
 
 message_size = 64
 packet_size = 8
