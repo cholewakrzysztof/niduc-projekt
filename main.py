@@ -43,15 +43,18 @@ channel = BSCChannel(error_probability)
 mu = 3
 delta = 7
 coder = BCHCoder(mu, delta)
-test_transmission(channel, coder, message_size, packet_size, "bch")
+if harvester.check_combination(coder, packet_size, mu, delta):
+    test_transmission(channel, coder, message_size, packet_size, "bch")
 
 mu = 3
 coder = HammingCode(mu)
-test_transmission(channel, coder, message_size, packet_size, "hamming")
+if harvester.check_combination(coder, packet_size ,mu,delta):
+    test_transmission(channel, coder, message_size, packet_size, "hamming")
 
 n = packet_size + 1
 coder = SingleParityCheckCode(n)
-test_transmission(channel, coder, message_size, packet_size, "parzystosc")
+if harvester.check_combination(coder, n ,mu,delta):
+    test_transmission(channel, coder, message_size, packet_size, "parzystosc")
 
 p = 0.1  # Prawdopodobieństwo przejścia ze stanu dobrego do złego
 r = 0.2  # Prawdopodobieństwo przejścia ze stanu złego do dobrego
@@ -61,4 +64,5 @@ channel = GilbertElliottChannel(p, r, k, h)
 n = packet_size + 3
 k = packet_size
 coder = ReedSolomonCoder(n, k)
-test_transmission(channel, coder, message_size, packet_size, "reedsolomon")
+if harvester.check_combination(coder, n ,mu,delta):
+    test_transmission(channel, coder, message_size, packet_size, "reedsolomon")

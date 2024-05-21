@@ -58,13 +58,7 @@ def harvest_single_combination(coder: str,
     return comb
 
 
-def check_combination(coder_: CoderInterface, packet: RawBitChain) -> bool:
-    coder = coder_.__str__()
-    try:
-        harvest_single_combination(coder, packet, 0, 0, 0.1)
-        return True
-    except:
-        return False
+
 
 
 class CombinationHarvester:
@@ -76,10 +70,29 @@ class CombinationHarvester:
     mu: list[int] = [2,3,4,5,6,7,8,9,10]
     delta: list[int] = [0.1]
 
-    def __init__(self, packet_sizes: list[int], mu: list[int], delta: list[int]):
+    def __init__(self, packet_sizes=None, mu=None, delta=None):
+        if delta is None:
+            delta = [0]
+        if mu is None:
+            mu = [0]
+        if packet_sizes is None:
+            packet_sizes = [0]
         self.packet_sizes = packet_sizes
         self.mu = mu
         self.delta = delta
+
+    @staticmethod
+    def check_combination(coder_: CoderInterface, packet_size: int, mu=0, delta=0) -> bool:
+        data_generator = DataGenerator()
+        data_generator.generate_data(packet_size, packet_size)
+        packet = data_generator.get_packets()[0]
+
+        coder = coder_.__str__()
+        try:
+            harvest_single_combination(coder, packet, mu, delta, 0.1)
+            return True
+        except:
+            return False
 
     def harvest(self) -> list[Combination]:
         combinations = []
