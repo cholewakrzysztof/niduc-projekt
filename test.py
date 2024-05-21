@@ -11,8 +11,8 @@ from coders.ReedSolomonCoder import ReedSolomonCoder
 from coders.SingleParityCheckCode import SingleParityCheckCode
 from common.NumUtils import NumUtils
 from data.DataComparator import DataComparator
-from data.DataGenerator import DataGenerator
 from data.DataSequencer import DataSequencer
+from data.DataGenerator import DataGenerator
 
 
 def test_coder(message_size: int, coder: CoderInterface, channel: ChannelInterface, packets: list, writer):
@@ -30,14 +30,17 @@ def test_coder(message_size: int, coder: CoderInterface, channel: ChannelInterfa
 
 
 message_size = 64
-message = DataGenerator.random_bits_array_generator(message_size)
-
+#message = DataGenerator.random_bits_array_generator(message_size)
 packet_size = 8
-packets = DataSequencer.divide_into_subsequences(message, packet_size)
+#packets = DataSequencer.divide_into_subsequences(message, packet_size)
+
+data_generator = DataGenerator()
+data_generator.generate_data(message_size, packet_size)
+packets = data_generator.get_packets()
 
 current_time = datetime.datetime.now()
 timestamp_str = current_time.strftime("%Y-%m-%d_%H%M%S")
-file_name = f'C:\\Users\\Admin\\Desktop\\NIDUC\\esults_{timestamp_str}.csv'
+file_name = f'C:\\Users\\Admin\\Desktop\\NIDUC\\_results_{timestamp_str}.csv'
 file_csv = open(file_name, 'w', newline='')
 writer = csv.writer(file_csv, delimiter=';')
 writer.writerow(['Coder', 'Channel', 'Packet Size', 'In', 'Out', 'Differences', 'Bit error rate'])
@@ -48,7 +51,7 @@ channel = BSCChannel(error_probability)
 mu = 3
 delta = 7
 coder = BCHCoder(mu, delta)
-test_coder(message_size, coder, channel, packets, writer)
+#test_coder(message_size, coder, channel, packets, writer)
 
 mu = 3
 coder = HammingCode(mu)

@@ -1,8 +1,6 @@
-from abc import ABC, abstractmethod
 import numpy as np
 from numpy import ndarray
 from reedsolo import RSCodec
-
 from coders.CoderInterface import CoderInterface
 
 
