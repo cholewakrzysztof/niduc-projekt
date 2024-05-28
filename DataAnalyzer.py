@@ -10,9 +10,11 @@ class DataAnalyzer:
     test_results: list[TestResult] = []
     report: Report
     total_differences: int = 0
+    redundancy: int = 0
 
     def get_transmission_data(self, data: TransmissionData):
         self.total_differences = 0
+        self.redundancy = 0
 
         for idx in range(len(data.in_packets)):
             input_bits = data.in_packets[idx].chain
@@ -27,7 +29,8 @@ class DataAnalyzer:
                              data.channel,
                              data.message_size,
                              data.packet_size,
-                             error_bit_rate)
+                             error_bit_rate,
+                             self.redundancy)
 
     def add_test_data(self,
                       in_bits: numpy.ndarray,
@@ -41,6 +44,7 @@ class DataAnalyzer:
                           out_bits: numpy.ndarray,
                           channel_bits: numpy.ndarray):
         redundancy_bits_count = len(channel_bits) - len(in_bits)
+        self.redundancy += redundancy_bits_count
 
         error_type = ErrorTypes.NONE
         differences = DataComparator.count_different_elements(in_bits, out_bits)

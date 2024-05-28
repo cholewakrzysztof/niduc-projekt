@@ -7,6 +7,7 @@ from channels.BSCChannel import BSCChannel
 from channels.GilbertElliottChannel import GilbertElliottChannel
 from coders.BCHCoder import BCHCoder
 from coders.HammingCode import HammingCode
+from coders.NoCoder import NoCoder
 from coders.ReedSolomonCoder import ReedSolomonCoder
 from coders.SingleParityCheckCode import SingleParityCheckCode
 from data.DataGenerator import DataGenerator
@@ -29,14 +30,16 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
     data_writer = DataWriter()
     data_writer.save_to_file(data_analyzer.get_report(),
                              name,
-                             "C:\\Users\\Admin\\Desktop\\NIDUC")  # f'{path}\\{name}_{timestamp_str}.csv'
+                             "C:\\Users\\Admin\\Desktop\\")  # f'{path}\\{name}_{timestamp_str}.csv'
 
 def simulation():
     harvester = CombinationHarvester(list(range(8, 32, 8)), list(range(2, 9, 1)), list([3, 5, 7]))
     harvester.harvest()
 
+
     message_size = 64
     packet_size = 8
+
 
     error_probability = 0.1
     channel = BSCChannel(error_probability)
@@ -46,6 +49,7 @@ def simulation():
     coder = BCHCoder(mu, delta)
     if harvester.check_combination(coder, packet_size, mu, delta):
         test_transmission(channel, coder, message_size, packet_size, "bch")
+
 
     mu = 3
     coder = HammingCode(mu)
@@ -90,4 +94,3 @@ while True:
         pass
     else:
         pass
-
