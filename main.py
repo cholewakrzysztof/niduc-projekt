@@ -6,6 +6,7 @@ from channels.BSCChannel import BSCChannel
 from channels.GilbertElliottChannel import GilbertElliottChannel
 from coders.BCHCoder import BCHCoder
 from coders.HammingCode import HammingCode
+from coders.NoCoder import NoCoder
 from coders.ReedSolomonCoder import ReedSolomonCoder
 from coders.SingleParityCheckCode import SingleParityCheckCode
 from data.DataGenerator import DataGenerator
@@ -28,11 +29,11 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
     data_writer = DataWriter()
     data_writer.save_to_file(data_analyzer.get_report(),
                              name,
-                             "C:\\Test\\NIDUC")  # f'{path}\\{name}_{timestamp_str}.csv'
+                             "C:\\Users\\Admin\\Desktop\\")  # f'{path}\\{name}_{timestamp_str}.csv'
 
 
 harvester = CombinationHarvester(list(range(8, 32, 8)), list(range(2, 9, 1)), list([3, 5, 7]))
-harvester.harvest()
+# harvester.harvest()
 
 message_size = 64
 packet_size = 8
@@ -42,27 +43,27 @@ channel = BSCChannel(error_probability)
 
 mu = 3
 delta = 7
-coder = BCHCoder(mu, delta)
-if harvester.check_combination(coder, packet_size, mu, delta):
-    test_transmission(channel, coder, message_size, packet_size, "bch")
+coder = BCHCoder(mu,delta)
+# if harvester.check_combination(coder, packet_size, mu, delta):
+# test_transmission(channel, coder, message_size, packet_size, "bch")
 
-mu = 3
-coder = HammingCode(mu)
-if harvester.check_combination(coder, packet_size ,mu,delta):
-    test_transmission(channel, coder, message_size, packet_size, "hamming")
-
+# mu = 3
+# coder = HammingCode(mu)
+# if harvester.check_combination(coder, packet_size ,mu,delta):
+#     test_transmission(channel, coder, message_size, packet_size, "hamming")
+#
 n = packet_size + 1
 coder = SingleParityCheckCode(n)
-if harvester.check_combination(coder, n ,mu,delta):
-    test_transmission(channel, coder, message_size, packet_size, "parzystosc")
-
-p = 0.1  # Prawdopodobieństwo przejścia ze stanu dobrego do złego
-r = 0.2  # Prawdopodobieństwo przejścia ze stanu złego do dobrego
-k = 0.9  # Prawdopodobieństwo poprawnej transmisji w stanie dobrym
-h = 0.1  # Prawdopodobieństwo poprawnej transmisji w stanie złym
-channel = GilbertElliottChannel(p, r, k, h)
-n = packet_size + 3
-k = packet_size
-coder = ReedSolomonCoder(n, k)
-if harvester.check_combination(coder, n ,mu,delta):
-    test_transmission(channel, coder, message_size, packet_size, "reedsolomon")
+# if harvester.check_combination(coder, n ,mu,delta):
+test_transmission(channel, coder, message_size, packet_size, "parzystosc")
+#
+# p = 0.1  # Prawdopodobieństwo przejścia ze stanu dobrego do złego
+# r = 0.2  # Prawdopodobieństwo przejścia ze stanu złego do dobrego
+# k = 0.9  # Prawdopodobieństwo poprawnej transmisji w stanie dobrym
+# h = 0.1  # Prawdopodobieństwo poprawnej transmisji w stanie złym
+# channel = GilbertElliottChannel(p, r, k, h)
+# n = packet_size + 3
+# k = packet_size
+# coder = ReedSolomonCoder(n, k)
+# if harvester.check_combination(coder, n ,mu,delta):
+#     test_transmission(channel, coder, message_size, packet_size, "reedsolomon")
