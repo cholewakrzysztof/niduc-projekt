@@ -17,29 +17,40 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
     data_generator = DataGenerator()
     data_generator.generate_data(message_size_, packet_size_)
     packets = data_generator.get_packets()
-
     controller = TransmissionController.TransmissionController()
-    controller.set_channel(channel_)
-    controller.set_coder(coder_f)
-    controller.set_packets(packets)
-    controller.start_transmission()
+    data_writer = DataWriter()
+    data_writer.open(name, "C:\\Temp\\niduc\\")
 
     data_analyzer = DataAnalyzer()
-    data_analyzer.get_transmission_data(controller.get_transmission_data())
+    error_bit_rate = 0.0
+    redundancy_sum = 0
 
-    data_writer = DataWriter()
-    data_writer.save_to_file(data_analyzer.get_report(),
-                             name,
-                             "C:\\Users\\Admin\\Desktop\\")  # f'{path}\\{name}_{timestamp_str}.csv'
+    iteration_count = 50
+    for i in range(iteration_count):
+        controller.set_channel(channel_)
+        controller.set_coder(coder_f)
+        controller.set_packets(packets)
+        controller.start_transmission()
+
+        data_analyzer = DataAnalyzer()
+        data_analyzer.get_transmission_data(controller.get_transmission_data())
+        report = data_analyzer.get_report()
+        error_bit_rate += report.error_bit_rate
+        redundancy_sum += report.redundancy
+        data_writer.writeReport(i + 1, report)  # f'{path}\\{name}_{timestamp_str}.csv'
+
+    avg_redundancy = int(redundancy_sum / iteration_count)
+    avg_error_bit_rate = error_bit_rate / iteration_count
+    data_writer.writeSummary(data_analyzer.get_report(), avg_redundancy, avg_error_bit_rate)
+    data_writer.close()
+
 
 def simulation():
     harvester = CombinationHarvester(list(range(8, 32, 8)), list(range(2, 9, 1)), list([3, 5, 7]))
     harvester.harvest()
 
-
     message_size = 64
     packet_size = 8
-
 
     error_probability = 0.1
     channel = BSCChannel(error_probability)
@@ -49,7 +60,6 @@ def simulation():
     coder = BCHCoder(mu, delta)
     if harvester.check_combination(coder, packet_size, mu, delta):
         test_transmission(channel, coder, message_size, packet_size, "bch")
-
 
     mu = 3
     coder = HammingCode(mu)
