@@ -65,4 +65,6 @@ Kiedy uznamy, że to co chcieliśmy dodać jest gotowe trzeba dokonać scalenia 
 
 - [[Biblioteka komm Python]](https://pypi.org/project/komm/)
 
+- [[Excel z propozycjami badawczymi]](https://politechnikawroclawska-my.sharepoint.com/:x:/g/personal/273025_student_pwr_edu_pl/EXl0E__nLuJHkCG-eg7tqB8BcH2gAW_FwNvt0V-v5P1xvA?e=OTYxfe)
+
 
