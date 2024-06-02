@@ -5,15 +5,19 @@ from common.Report import Report
 
 
 class DataWriter:
+    writer = None
+    file_name = None
+    file_csv = None
 
     @staticmethod
-    def save_to_file(report: Report, name: string, path: string):
+    def open(name: string, path: string):
         current_time = datetime.datetime.now()
         timestamp_str = current_time.strftime("%Y-%m-%d_%H%M%S")
-        file_name = f'{path}\\{name}_{timestamp_str}.csv'
-        file_csv = open(file_name, 'w', newline='')
-        writer = csv.writer(file_csv, delimiter=';')
-        writer.writerow(['Coder',
+        DataWriter.file_name = f'{path}\\{name}_{timestamp_str}.csv'
+        DataWriter.file_csv = open(DataWriter.file_name, 'w', newline='')
+        DataWriter.writer = csv.writer(DataWriter.file_csv, delimiter=';')
+        DataWriter.writer.writerow(['Coder',
+                         'Iteration',
                          'Channel',
                          'Packet Size',
                          'In',
@@ -22,6 +26,14 @@ class DataWriter:
                          'Redundancy bit count',
                          'Bit error rate'])
 
+    @staticmethod
+    def close():
+        DataWriter.file_csv.close()
+        print("Results been successfully written into csv file" + DataWriter.file_name)
+
+
+    @staticmethod
+    def writeReport(iteration: int, report: Report):
         coder = report.coder
         channel = report.channel
         packet_size = report.packet_size
@@ -34,7 +46,8 @@ class DataWriter:
             differences = result.differences_count
             redundancy = result.redundancy_bits_count
 
-            writer.writerow([coder,
+            DataWriter.writer.writerow([coder,
+                             iteration,
                              channel,
                              packet_size,
                              in_packet,
@@ -43,6 +56,11 @@ class DataWriter:
                              redundancy,
                              ''])
 
-        writer.writerow([coder, channel, packet_size, '', '', '', redundancy_sum, error_bit_rate])
+        DataWriter.writer.writerow([coder, iteration, channel, packet_size, '', '', '', redundancy_sum, error_bit_rate])
 
-        print("Date been written into csv file" + file_name)
+    @staticmethod
+    def writeSummary(report: Report, avg_redundancy_sum: int, avg_error_bit_rate: float):
+        DataWriter.writer.writerow([report.coder, -1, report.channel, report.packet_size, '', '', '', avg_redundancy_sum, avg_error_bit_rate])
+
+
+

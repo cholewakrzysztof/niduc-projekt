@@ -29,7 +29,7 @@ def test_coder(message_size: int, coder: CoderInterface, channel: ChannelInterfa
     print(f"{coder};{channel};{packet_size};;;{error_bit_rate}")
 
 
-message_size = 64
+message_size = 6400
 #message = DataGenerator.random_bits_array_generator(message_size)
 packet_size = 8
 #packets = DataSequencer.divide_into_subsequences(message, packet_size)
