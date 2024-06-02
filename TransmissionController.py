@@ -26,6 +26,11 @@ class TransmissionController:  # Start of class definition
         self.output_packets = []
         self.input_packets = []
 
+    def clear(self):
+        self.channel_packets = []
+        self.output_packets = []
+        self.input_packets = []
+
     def set_coder(self, coder: CoderInterface):
         self.coder = coder
 

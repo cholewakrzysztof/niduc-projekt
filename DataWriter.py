@@ -56,11 +56,11 @@ class DataWriter:
                              redundancy,
                              ''])
 
-        DataWriter.writer.writerow([coder, iteration, channel, packet_size, '', '', '', redundancy_sum, error_bit_rate])
+        DataWriter.writer.writerow([coder, iteration, channel, packet_size, '', '', '', redundancy_sum, '\t'+str(error_bit_rate)])
 
     @staticmethod
     def writeSummary(report: Report, avg_redundancy_sum: int, avg_error_bit_rate: float):
-        DataWriter.writer.writerow([report.coder, -1, report.channel, report.packet_size, '', '', '', avg_redundancy_sum, avg_error_bit_rate])
+        DataWriter.writer.writerow([report.coder, -1, report.channel, report.packet_size, '', '', '', avg_redundancy_sum, '\t'+str(avg_error_bit_rate)])
 
 
 

@@ -15,6 +15,7 @@ class DataAnalyzer:
     def get_transmission_data(self, data: TransmissionData):
         self.total_differences = 0
         self.redundancy = 0
+        self.test_results = []
 
         for idx in range(len(data.in_packets)):
             input_bits = data.in_packets[idx].chain
