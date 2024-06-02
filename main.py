@@ -19,7 +19,7 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
     packets = data_generator.get_packets()
     controller = TransmissionController.TransmissionController()
     data_writer = DataWriter()
-    data_writer.open(name, "C:\\Temp\\niduc\\")
+    data_writer.open(name, "C:\\Users\\Admin\\Desktop\\NIDUC\\")
 
     data_analyzer = DataAnalyzer()
     error_bit_rate = 0.0
@@ -27,6 +27,7 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
 
     iteration_count = 50
     for i in range(iteration_count):
+        controller.clear()
         controller.set_channel(channel_)
         controller.set_coder(coder_f)
         controller.set_packets(packets)
@@ -52,7 +53,7 @@ def simulation():
     message_size = 64
     packet_size = 8
 
-    error_probability = 0.1
+    error_probability = 0.3
     channel = BSCChannel(error_probability)
 
     mu = 3
