@@ -47,7 +47,7 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
 
 
 def simulation():
-    harvester = CombinationHarvester(list(range(8, 32, 8)), list(range(2, 9, 1)), list([3, 5, 7]))
+    harvester = CombinationHarvester([8,16,32,64,128,256,512,1024,2048], [2,3,4,5,6,7,8,9,10], range(3, 2, 1024))
     harvester.harvest()
 
     message_size = 64
@@ -83,6 +83,9 @@ def simulation():
     if harvester.check_combination(coder, n, mu, delta):
         test_transmission(channel, coder, message_size, packet_size, "reedsolomon")
 
+
+harvester = CombinationHarvester([8,16,32,64,128,256,512,1024,2048], [2,3,4,5,6,7,8,9,10], [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 69, 71, 73, 75, 77, 79, 83, 85, 87, 89, 91, 93, 95, 99, 101, 103, 105, 107, 109, 111, 115, 117, 119, 121, 123, 125, 127, 147, 149, 151, 155, 157, 159, 165, 167, 171, 173, 175, 179, 181, 183, 187, 189, 191, 205, 207, 213, 215, 219, 221, 223, 231, 235, 237, 239, 245, 247, 251, 253, 255, 341, 343, 347, 351, 363, 367, 375, 379, 383, 439, 447, 479, 495, 511, 10231])
+harvester.harvest()
 
 into = 0
 opcja = 0
