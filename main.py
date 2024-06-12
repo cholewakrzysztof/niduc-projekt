@@ -1,3 +1,5 @@
+import math
+
 import Menu
 import TransmissionController
 from DataAnalyzer import DataAnalyzer
@@ -30,7 +32,7 @@ def test_transmission(channel_, coder_f, message_size_, packet_size_, name):
     data_writer = DataWriter()
     data_writer.save_to_file(data_analyzer.get_report(),
                              name,
-                             "C:\\Users\\Admin\\Desktop\\")  # f'{path}\\{name}_{timestamp_str}.csv'
+                             "C:\\test\\NIDUC\\")  # f'{path}\\{name}_{timestamp_str}.csv'
 
 def simulation():
     harvester = CombinationHarvester(list(range(8, 32, 8)), list(range(2, 9, 1)), list([3, 5, 7]))
@@ -75,22 +77,70 @@ def simulation():
 
 into = 0
 opcja = 0
+isPossibleTC = 0
+cof_opcja = (280,218,228)
+glow_opcja = (290,219,229)
+mozliwe_opcje = (100,200,210,211,212,213,220,221,230,300,410,420,900,0) + cof_opcja + glow_opcja
+coder_name = None
 while True:
     isExistBC = 'packets' in globals()
     isExistTC = 'controller' in globals()
-    Menu.wyswietl_menu(isExistBC, isExistBC, into)
+    isExistAC = 'data_analyzer' in globals()
+    Menu.wyswietl_menu(isExistBC, isPossibleTC, isExistAC, into, opcja)
     wybor = Menu.wybor()
     opcja += Menu.obliczenie_opcji(into, wybor)
-    if opcja == 0:
-        break
-    elif opcja == 900:
-        simulation()
-        opcja = 0
-    elif opcja == 100:
-        pass
-    elif opcja == 200:
-        pass
-    elif opcja == 300:
-        pass
+    if opcja in mozliwe_opcje:
+        if opcja == 0:
+            break
+        elif opcja == 900:
+            simulation()
+            opcja = 0
+        elif opcja in cof_opcja:
+            into -= 1
+            opcja = math.floor(opcja / 100) * 100
+        elif opcja in glow_opcja:
+            into = 0
+            opcja = 0
+        elif opcja < 200:
+            data_generator = DataGenerator()
+            data_generator.data_generator()
+            packets = data_generator.get_packets()
+            opcja = 0
+        elif opcja < 300 and isExistBC:
+            if into == 0:
+                controller = TransmissionController.TransmissionController()
+                into += 1
+            elif isExistTC:
+                if opcja % 10 != 0:
+                    Menu.wybor_kodera(controller, opcja, data_generator.packet_size)
+                    coder_name = Menu.nazwa_kodera(opcja)
+                    isPossibleTC = 1
+                    opcja = 200
+                    into -= 1
+                elif opcja == 230:
+                    controller.set_packets(packets)
+                    controller.start_transmission()
+                    into = 0
+                    opcja = 0
+                    data_analyzer = DataAnalyzer()
+                    isExistAC = 1
+                elif opcja % 10 == 0 and opcja % 100 != 0:
+                    Menu.wybor_kanalu(controller, opcja)
+                    into += 1
+        elif opcja == 300:
+            data_analyzer.get_transmission_data(controller.get_transmission_data())
+
+            data_writer = DataWriter()
+            data_writer.save_to_file(data_analyzer.get_report(),
+                                     coder_name,
+                                     "C:\\test\\NIDUC\\")
+        elif isExistBC == False:
+            print("Brak łańcucha bitowego.")
+        elif isExistTC == False:
+            print("Brak wykonanej transmisji.")
+        elif isExistAC == False:
+            print("Brak Data Analyzera.")
     else:
-        pass
+        print("Niepoprawna opcja.")
+        opcja -= Menu.obliczenie_opcji(into, wybor)
+

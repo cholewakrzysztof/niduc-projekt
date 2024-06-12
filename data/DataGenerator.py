@@ -7,6 +7,7 @@ class DataGenerator:
     def __init__(self):
         self.bit_chain = []
         self.packets = []
+        self.packet_size = int
 
     def reader(self, file_path):
         if not os.path.exists(file_path) or os.path.getsize(file_path) == 0:
@@ -40,7 +41,7 @@ class DataGenerator:
 
     @staticmethod
     def generate_random_data(length):
-        return [int(bit) for bit in ''.join(random.choice('01') for _ in range(length))]
+        return [bit for bit in ''.join(random.choice('01') for _ in range(length))]
 
     def split_into_packets(self, packet_size):
         if packet_size <= 0:
@@ -79,6 +80,7 @@ class DataGenerator:
         if len(self.packets) < 1:
             print("Warning: packets number is 0")
         return [*self.packets]
+
 
 
 if __name__ == "__main__":
