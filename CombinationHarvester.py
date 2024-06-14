@@ -33,6 +33,8 @@ def harvest_single_combination(coder: str,
 
     channel = BSCChannel(error_probability)
 
+    print(f'Checking: packet = {len(packet.chain)} mu = {mu} delta = {delta}\n')
+
     comb = Combination(channel.__str__(), coder)
     comb.combination = []
     comb.combination.append(len(packet.chain))
@@ -55,6 +57,9 @@ def harvest_single_combination(coder: str,
     controller.set_coder(coder)
     controller.set_packet(packet)
     controller.start_transmission()
+
+    del controller
+    del channel
     return comb
 
 
@@ -87,12 +92,19 @@ class CombinationHarvester:
         data_generator.generate_data(packet_size, packet_size)
         packet = data_generator.get_packets()[0]
 
+
         coder = coder_.__str__()
         try:
             harvest_single_combination(coder, packet, mu, delta, 0.1)
             return True
         except:
             return False
+
+    @staticmethod
+    def append_line_to_file(file_path, line):
+        with open(file_path, 'a') as file:
+            file.write(line + '\n')
+            file.close()
 
     def harvest(self) -> list[Combination]:
         combinations = []
@@ -105,7 +117,8 @@ class CombinationHarvester:
                         if coder == 'SingleParityCheckCode':
                             try:
                                 c = harvest_single_combination(coder, packet, 0, 0, p)
-                                print(c)
+                                print(str(c))
+                                CombinationHarvester.append_line_to_file("C:\\Users\\Admin\\Desktop\\harvest.txt",str(c))
                             except:
                                 i = 0
                         else:
@@ -115,12 +128,18 @@ class CombinationHarvester:
                                         try:
                                             c = harvest_single_combination(coder, packet, m, d, p)
                                             print(c)
+                                            CombinationHarvester.append_line_to_file(
+                                            "C:\\Users\\Admin\\Desktop\\harvest.txt", str(c))
+
                                         except:
                                             i = 0
                                 else:
                                     try:
                                         c = harvest_single_combination(coder, packet, m, 0, p)
                                         print(c)
+                                        CombinationHarvester.append_line_to_file("C:\\Users\\Admin\\Desktop\\harvest.txt",
+                                                                             str(c))
+
                                     except:
                                         i = 0
 
