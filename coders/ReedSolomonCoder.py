@@ -10,6 +10,8 @@ class ReedSolomonCoder(CoderInterface):
 
     def __init__(self, n, k):
         self.rs = RSCodec(n - k)
+        self.n = n
+        self.k = k
 
     def __str__(self):
         return "ReedSolomonCoder"
@@ -19,5 +21,10 @@ class ReedSolomonCoder(CoderInterface):
         return np.array(encoded_data)
 
     def decode(self, array: ndarray) -> ndarray:
-        decoded_data = self.rs.decode(array)
-        return np.array(decoded_data)
+        try:
+            x, decoded_data,another = self.rs.decode(array)
+        except:
+            decoded_data = array
+
+        decoded_data = decoded_data[:-(self.n-self.k)]
+        return np.array([b for b in decoded_data])

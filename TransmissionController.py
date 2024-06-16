@@ -56,6 +56,7 @@ class TransmissionController:  # Start of class definition
                                 self.message_size)
 
     def set_packets(self, packets: list[RawBitChain]):
+        self.input_packets = []
         self.input_packets = packets
         self.packet_size = len(packets[0].chain)
         self.message_size = len(packets) * self.packet_size
