@@ -2,7 +2,6 @@ import Menu
 from TransmissionController import TransmissionController
 from DataAnalyzer import DataAnalyzer
 from DataWriter import DataWriter
-from CombinationHarvester import CombinationHarvester
 from channels.BSCChannel import BSCChannel
 from channels.GilbertElliottChannel import GilbertElliottChannel
 from coders.BCHCoder import BCHCoder
@@ -12,84 +11,97 @@ from coders.ReedSolomonCoder import ReedSolomonCoder
 from coders.SingleParityCheckCode import SingleParityCheckCode
 from data.DataGenerator import DataGenerator
 
-def simulation():
-    writer = DataWriter()
-    writer.open('dobry_kanal', "C:\\Users\\Admin\\Desktop\\NIDUC\\")
 
-    for iteration in range(1):
-        sizes = [8,32,128]
-        mu =    [2,3,3,4, 5, 6]
-        delta = [3,3,7,15,31,63]
-        reedSolomonRedundancies = [4,16,64,120]
+def bsc_channel_simulation(error_prob, mus, deltas, sizes, iteration, message_size, writer):
+    coders = [NoCoder(), HammingCode(2), HammingCode(3)]
+    for idx in range(mus.__len__()):
+        coders.append(BCHCoder(mus[idx], deltas[idx]))
 
-        print("Generuje kodery\n")
-        coders = [NoCoder(), HammingCode(2), HammingCode(3)]
-        for idx in range(mu.__len__()-1):
-            coders.append(BCHCoder(mu[idx], delta[idx]))
-        coders = []
+    generator = DataGenerator()
+    analyzer = DataAnalyzer()
 
-        generator = DataGenerator()
-        analyzer = DataAnalyzer()
-
-        print("Wstepne obiekty wygenerowane\n")
-
-        for size in sizes:
-            print(f'Generuje dane dla rozmiaru {size}\n')
-            generator.generate_data(512, size)
-            channel = BSCChannel(0.06)
-            for coder in coders:
-                print(f'Przesylam dane rozmiar: {size} koder: {coder}')
-
-                if coder.__str__() == 'BCHCoder' or coder.__str__() == 'HammingCoder':
-                    print(f' mu: {coder.mu}')
-                    if coder.__str__() == 'BCHCoder':
-                        print(f' delta: {coder.delta}')
-
-                print('\n')
-                controller = TransmissionController(channel, coder)
-                controller.set_packets(generator.get_packets())
-                controller.start_transmission()
-                analyzer.get_transmission_data(controller.get_transmission_data())
-                writer.writeReport(iteration, analyzer.get_report())
-                print('Dane zapisane do pliku\n')
-
-            coder = SingleParityCheckCode(size+1)
-            print(f'Przesylam dane rozmiar: {size} koder: {coder}')
-
-            if coder.__str__() == 'BCHCoder' or coder.__str__() == 'HammingCoder':
-                print(f' mu: {coder.mu}')
-                if coder.__str__() == 'BCHCoder':
-                    print(f' delta: {coder.delta}')
-
-            print('\n')
+    for size in sizes:
+        generator.generate_data(message_size, size)
+        channel = BSCChannel(error_prob)
+        for coder in coders:
             controller = TransmissionController(channel, coder)
             controller.set_packets(generator.get_packets())
             controller.start_transmission()
             analyzer.get_transmission_data(controller.get_transmission_data())
             writer.writeReport(iteration, analyzer.get_report())
-            print('Dane zapisane do pliku\n')
+            print(f'    Coder {coder} finished')
+        coder = SingleParityCheckCode(size + 1)
+        controller = TransmissionController(channel, coder)
+        controller.set_packets(generator.get_packets())
+        controller.start_transmission()
+        analyzer.get_transmission_data(controller.get_transmission_data())
+        writer.writeReport(iteration, analyzer.get_report())
+        print(f'Size {size} finished')
 
-            for redundancy in reedSolomonRedundancies:
-                n = size + redundancy
-                k = size
-                coder = ReedSolomonCoder(n,k)
-                channel = GilbertElliottChannel(0.05,0.5,0.99,0.2)
-                print(f'Przesylam dane rozmiar: {size} koder: {coder}')
 
-                if coder.__str__() == 'BCHCoder' or coder.__str__() == 'HammingCoder':
-                    print(f' mu: {coder.mu}')
-                    if coder.__str__() == 'BCHCoder':
-                        print(f' delta: {coder.delta}')
+def gilbert_eliot_simulation(p, r, k, h, sizes, iteration, message_size, writer):
+    reed_solomon_redundancies = [8, 16, 24, 48, 96, 112, 240]
 
-                print('\n')
-                controller = TransmissionController(channel, coder)
-                controller.set_packets(generator.get_packets())
-                controller.start_transmission()
-                analyzer.get_transmission_data(controller.get_transmission_data())
-                writer.writeReport(iteration, analyzer.get_report())
-                print('Dane zapisane do pliku\n')
+    generator = DataGenerator()
+    analyzer = DataAnalyzer()
 
-        writer.close()
+    for size in sizes:
+        generator.generate_data(message_size, size)
+        for redundancy in reed_solomon_redundancies:
+            n = size + redundancy
+            k_n = size
+            coder = ReedSolomonCoder(n, k_n)
+            channel = GilbertElliottChannel(p, r, k, h)
+            controller = TransmissionController(channel, coder)
+            controller.set_packets(generator.get_packets())
+            controller.start_transmission()
+            analyzer.get_transmission_data(controller.get_transmission_data())
+            writer.writeReport(iteration, analyzer.get_report())
+            print(f'    Redundancy {redundancy} finished')
+
+        coder = NoCoder()
+        channel = GilbertElliottChannel(p, r, k, h)
+        controller = TransmissionController(channel, coder)
+        controller.set_packets(generator.get_packets())
+        controller.start_transmission()
+        analyzer.get_transmission_data(controller.get_transmission_data())
+        writer.writeReport(iteration, analyzer.get_report())
+        print(f'Size {size} finished')
+
+
+def simulation():
+    sizes = [8,32,128]
+    mu = [2, 3, 3, 4, 5] #6
+    delta = [3, 3, 7, 15, 31] #63
+    path = "C:\\Users\\Admin\\Desktop\\NIDUC\\"
+    message_size = 1024
+    iterations = range(3)
+
+    writerd = DataWriter()
+    writerd.open(f'dobry', path)
+    for i in iterations:
+        bsc_channel_simulation(0.06, mu, delta, sizes, i, message_size, writerd)
+        gilbert_eliot_simulation(0.05, 0.5, 0.99, 0.2, sizes, i, message_size, writerd)
+        print(f'End of iteration {i} for dobry')
+    writerd.close()
+
+    writers = DataWriter()
+    writers.open(f'sredni', path)
+    for i in iterations:
+        bsc_channel_simulation(0.25, mu, delta, sizes, i, message_size, writers)
+        gilbert_eliot_simulation(0.08, 0.35, 0.9, 0.15, sizes, i, message_size, writers)
+        print(f'End of iteration {i} for sredni')
+    writers.close()
+
+    writerz = DataWriter()
+    writerz.open(f'zly', path)
+    for i in iterations:
+        bsc_channel_simulation(0.45, mu, delta, sizes, i, message_size, writerz)
+        gilbert_eliot_simulation(0.12, 0.15, 0.9, 0.09, sizes, i, message_size, writerz)
+        print(f'End of iteration {i} for zly')
+    writerz.close()
+
+
 
 into = 0
 opcja = 0

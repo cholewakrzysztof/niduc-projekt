@@ -11,6 +11,8 @@ class Report:
     packet_size: int
     error_bit_rate: float
     redundancy: int
+    mu: int = 0
+    delta: int = 0
 
     def __init__(self,
                  test_results: list[TestResult],
@@ -19,7 +21,9 @@ class Report:
                  message_size: int,
                  packet_size: int,
                  error_bit_rate: float,
-                 redundancy:int):
+                 redundancy: int,
+                 mu: int = 0,
+                 delta: int = 0):
         self.test_results = test_results
         self.coder = coder
         self.channel = channel
@@ -27,3 +31,5 @@ class Report:
         self.packet_size = packet_size
         self.error_bit_rate = error_bit_rate
         self.redundancy = redundancy
+        self.mu = mu
+        self.delta = delta

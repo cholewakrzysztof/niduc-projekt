@@ -2,6 +2,7 @@ from channels.BSCChannel import BSCChannel
 from channels.ChannelInterface import ChannelInterface
 from coders.BCHCoder import BCHCoder
 from coders.CoderInterface import CoderInterface
+from coders.HammingCode import HammingCode
 from common.RawBitChain import RawBitChain
 from common.TransmissionData import TransmissionData
 
@@ -47,14 +48,33 @@ class TransmissionController:  # Start of class definition
             self.output_packets.append(received_packet)
 
     def get_transmission_data(self):
-        return TransmissionData(self.input_packets,
-                                self.output_packets,
-                                self.channel_packets,
-                                str(self.channel),
-                                str(self.coder),
-                                self.packet_size,
-                                self.message_size)
-
+        if self.coder.__str__() == "BCHCoder":
+            return TransmissionData(self.input_packets,
+                                    self.output_packets,
+                                    self.channel_packets,
+                                    str(self.channel),
+                                    str(self.coder),
+                                    self.packet_size,
+                                    self.message_size,
+                                    self.coder.mu,
+                                    self.coder.delta)
+        elif self.coder.__str__() == "HammingCoder":
+            return TransmissionData(self.input_packets,
+                                    self.output_packets,
+                                    self.channel_packets,
+                                    str(self.channel),
+                                    str(self.coder),
+                                    self.packet_size,
+                                    self.message_size,
+                                    self.coder.mu)
+        else:
+            return TransmissionData(self.input_packets,
+                                    self.output_packets,
+                                    self.channel_packets,
+                                    str(self.channel),
+                                    str(self.coder),
+                                    self.packet_size,
+                                    self.message_size)
     def set_packets(self, packets: list[RawBitChain]):
         self.input_packets = []
         self.input_packets = packets

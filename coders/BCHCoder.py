@@ -4,8 +4,8 @@ from coders.CoderInterface import CoderInterface
 
 
 class BCHCoder(CoderInterface):
-    mu: int
-    delta: int
+    mu = 3
+    delta = 3
 
     def __init__(self, mu, delta):
         self.mu = mu

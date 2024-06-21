@@ -26,5 +26,17 @@ class ReedSolomonCoder(CoderInterface):
         except:
             decoded_data = array
 
-        decoded_data = decoded_data[:-(self.n-self.k)]
-        return np.array([b for b in decoded_data])
+        list = []
+        for b in decoded_data:
+            if b == 0 or b == 1:
+                list.append(b)
+
+        if len(list) > self.k:
+            list = list[:self.k]
+
+        while len(list) < self.k:
+            list.append(0)
+
+        return np.array(list)
+
+

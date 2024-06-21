@@ -12,8 +12,8 @@ class DataWriter:
     @staticmethod
     def open(name: string, path: string):
         current_time = datetime.datetime.now()
-        timestamp_str = current_time.strftime("%Y-%m-%d_%H%M%S")
-        DataWriter.file_name = f'{path}\\{name}_{timestamp_str}.csv'
+        # timestamp_str = current_time.strftime("%Y-%m-%d_%H%M%S")
+        DataWriter.file_name = f'{path}\\{name}.csv'
         DataWriter.file_csv = open(DataWriter.file_name, 'w', newline='')
         DataWriter.writer = csv.writer(DataWriter.file_csv, delimiter=';')
         DataWriter.writer.writerow(['Coder',
@@ -24,7 +24,9 @@ class DataWriter:
                          'Out',
                          'Differences',
                          'Redundancy bit count',
-                         'Bit error rate'])
+                         'Bit error rate',
+                         'mu',
+                         'delta'])
 
     @staticmethod
     def close():
@@ -39,6 +41,8 @@ class DataWriter:
         packet_size = report.packet_size
         error_bit_rate = report.error_bit_rate
         redundancy_sum = report.redundancy
+        mu = report.mu
+        delta = report.delta
 
         for result in report.test_results:
             in_packet = result.in_bits
@@ -54,7 +58,9 @@ class DataWriter:
                              out_packet,
                              differences,
                              redundancy,
-                             '0'])
+                             '0',
+                             mu,
+                             delta])
 
         DataWriter.writer.writerow([coder, iteration, channel, packet_size, '0', '0', '0', redundancy_sum, '\t'+str(error_bit_rate)])
 

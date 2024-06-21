@@ -31,7 +31,9 @@ class DataAnalyzer:
                              data.message_size,
                              data.packet_size,
                              error_bit_rate,
-                             self.redundancy)
+                             self.redundancy,
+                             data.mu,
+                             data.delta)
 
     def add_test_data(self,
                       in_bits: numpy.ndarray,

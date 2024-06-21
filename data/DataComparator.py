@@ -8,4 +8,8 @@ class DataComparator:
 
     @staticmethod
     def count_different_elements(arr1, arr2):
-        return numpy.sum(arr1 != arr2)
+        try:
+            return numpy.sum(arr1 != arr2)
+        except:
+            print(arr1)
+            print(arr2)
