@@ -1,4 +1,5 @@
-import Menu
+import string
+
 from TransmissionController import TransmissionController
 from DataAnalyzer import DataAnalyzer
 from DataWriter import DataWriter
@@ -12,7 +13,7 @@ from coders.SingleParityCheckCode import SingleParityCheckCode
 from data.DataGenerator import DataGenerator
 
 
-def bsc_channel_simulation(error_prob, mus, deltas, sizes, iteration, message_size, writer):
+def bsc_channel_simulation(error_prob, mus, deltas, sizes, iteration, message_size, writer, rs):
     coders = [NoCoder(), HammingCode(2), HammingCode(3)]
     for idx in range(mus.__len__()):
         coders.append(BCHCoder(mus[idx], deltas[idx]))
@@ -29,18 +30,18 @@ def bsc_channel_simulation(error_prob, mus, deltas, sizes, iteration, message_si
             controller.start_transmission()
             analyzer.get_transmission_data(controller.get_transmission_data())
             writer.writeReport(iteration, analyzer.get_report())
-            print(f'    Coder {coder} finished')
+            print(f'    Koder: {coder} ukonczony')
         coder = SingleParityCheckCode(size + 1)
         controller = TransmissionController(channel, coder)
         controller.set_packets(generator.get_packets())
         controller.start_transmission()
         analyzer.get_transmission_data(controller.get_transmission_data())
         writer.writeReport(iteration, analyzer.get_report())
-        print(f'Size {size} finished')
+        print(f'Rozmiar {size} ukonczony')
 
 
-def gilbert_eliot_simulation(p, r, k, h, sizes, iteration, message_size, writer):
-    reed_solomon_redundancies = [8, 16, 24, 48, 96, 112, 240]
+def gilbert_eliot_simulation(p, r, k, h, sizes, iteration, message_size, writer, rs):
+    reed_solomon_redundancies = rs
 
     generator = DataGenerator()
     analyzer = DataAnalyzer()
@@ -57,7 +58,7 @@ def gilbert_eliot_simulation(p, r, k, h, sizes, iteration, message_size, writer)
             controller.start_transmission()
             analyzer.get_transmission_data(controller.get_transmission_data())
             writer.writeReport(iteration, analyzer.get_report())
-            print(f'    Redundancy {redundancy} finished')
+            print(f'    Nadmiarowosc {redundancy} ukonczona')
 
         coder = NoCoder()
         channel = GilbertElliottChannel(p, r, k, h)
@@ -66,61 +67,91 @@ def gilbert_eliot_simulation(p, r, k, h, sizes, iteration, message_size, writer)
         controller.start_transmission()
         analyzer.get_transmission_data(controller.get_transmission_data())
         writer.writeReport(iteration, analyzer.get_report())
-        print(f'Size {size} finished')
+        print(f'Rozmiar {size} ukonczony')
 
 
-def simulation():
-    sizes = [8,32,128]
-    mu = [2, 3, 3, 4, 5] #6
-    delta = [3, 3, 7, 15, 31] #63
-    path = "C:\\Users\\Admin\\Desktop\\NIDUC\\"
-    message_size = 1024
-    iterations = range(3)
+def simulation(path: string, name: string, sizes: list, mu: list, delta: list, message_size, iterations, rs: list):
 
     writerd = DataWriter()
-    writerd.open(f'dobry', path)
-    for i in iterations:
-        bsc_channel_simulation(0.06, mu, delta, sizes, i, message_size, writerd)
-        gilbert_eliot_simulation(0.05, 0.5, 0.99, 0.2, sizes, i, message_size, writerd)
-        print(f'End of iteration {i} for dobry')
+    writerd.open(f'{name}_good', path)
+
+    er_p = input('Podaj prawdopodobieństwo błędu dla kanału dobrej jakości (pozostaw puste dla wartości domyślnej):')
+    error_p = eval(er_p) if er_p.__len__() > 0 else 0.06
+
+    ps = input('Podaj prawdopodobieństwo p dla kanału dobrej jakości (pozostaw puste dla wartości domyślnej):')
+    p = eval(ps) if ps.__len__() > 0 else 0.05
+    r_s = input('Podaj prawdopodobieństwo r dla kanału dobrej jakości (pozostaw puste dla wartości domyślnej):')
+    r = eval(r_s) if r_s.__len__() > 0 else 0.5
+    ks = input('Podaj prawdopodobieństwo k dla kanału dobrej jakości (pozostaw puste dla wartości domyślnej):')
+    k = eval(ks) if ks.__len__() > 0 else 0.99
+    hs = input('Podaj prawdopodobieństwo h dla kanału dobrej jakości (pozostaw puste dla wartości domyślnej):')
+    h = eval(hs) if hs.__len__() > 0 else 0.2
+
+    for i in range(iterations):
+        bsc_channel_simulation(error_p, mu, delta, sizes, i, message_size, writerd, rs)
+        gilbert_eliot_simulation(p, r, k, h, sizes, i, message_size, writerd, rs)
+        print(f'Koniec iteracji {i + 1} dla kanału dobrej jakości')
     writerd.close()
 
+    er_p = input('Podaj prawdopodobieństwo błędu dla kanału średniej jakości (pozostaw puste dla wartości domyślnej):')
+    error_p = eval(er_p) if er_p.__len__() > 0 else 0.1
+
+    ps = input('Podaj prawdopodobieństwo p dla kanału średniej jakości (pozostaw puste dla wartości domyślnej):')
+    p = eval(ps) if ps.__len__() > 0 else 0.07
+    r_s = input('Podaj prawdopodobieństwo r dla kanału średniej jakości (pozostaw puste dla wartości domyślnej):')
+    r = eval(r_s) if r_s.__len__() > 0 else 0.38
+    ks = input('Podaj prawdopodobieństwo k dla kanału średniej jakości (pozostaw puste dla wartości domyślnej):')
+    k = eval(ks) if ks.__len__() > 0 else 0.92
+    hs = input('Podaj prawdopodobieństwo h dla kanału średniej jakości (pozostaw puste dla wartości domyślnej):')
+    h = eval(hs) if hs.__len__() > 0 else 0.17
+
     writers = DataWriter()
-    writers.open(f'sredni', path)
-    for i in iterations:
-        bsc_channel_simulation(0.25, mu, delta, sizes, i, message_size, writers)
-        gilbert_eliot_simulation(0.08, 0.35, 0.9, 0.15, sizes, i, message_size, writers)
-        print(f'End of iteration {i} for sredni')
+    writers.open(f'{name}_medium', path)
+    for i in range(iterations):
+        bsc_channel_simulation(error_p, mu, delta, sizes, i, message_size, writers, rs)
+        gilbert_eliot_simulation(p, r, k, h, sizes, i, message_size, writers, rs)
+        print(f'Koniec iteracji {i + 1} dla kanału średniej jakości')
     writers.close()
 
+    er_p = input('Podaj prawdopodobieństwo błędu dla kanału słabej jakości (pozostaw puste dla wartości domyślnej):')
+    error_p = eval(er_p) if er_p.__len__() > 0 else 0.3
+
+    ps = input('Podaj prawdopodobieństwo p dla kanału słabej jakości (pozostaw puste dla wartości domyślnej):')
+    p = eval(ps) if ps.__len__() > 0 else 0.1
+    r_s = input('Podaj prawdopodobieństwo r dla kanału słabej jakości (pozostaw puste dla wartości domyślnej):')
+    r = eval(r_s) if r_s.__len__() > 0 else 0.31
+    ks = input('Podaj prawdopodobieństwo k dla kanału słabej jakości (pozostaw puste dla wartości domyślnej):')
+    k = eval(ks) if ks.__len__() > 0 else 0.87
+    hs = input('Podaj prawdopodobieństwo h dla kanału słabej jakości (pozostaw puste dla wartości domyślnej):')
+    h = eval(hs) if hs.__len__() > 0 else 0.12
+
     writerz = DataWriter()
-    writerz.open(f'zly', path)
-    for i in iterations:
-        bsc_channel_simulation(0.45, mu, delta, sizes, i, message_size, writerz)
-        gilbert_eliot_simulation(0.12, 0.15, 0.9, 0.09, sizes, i, message_size, writerz)
-        print(f'End of iteration {i} for zly')
+    writerz.open(f'{name}_bad', path)
+    for i in range(iterations):
+        bsc_channel_simulation(error_p, mu, delta, sizes, i, message_size, writerz, rs)
+        gilbert_eliot_simulation(p, r, k, h, sizes, i, message_size, writerz, rs)
+        print(f'Koniec iteracji {i + 1} dla kanału słabej jakości')
     writerz.close()
 
-
-
-into = 0
-opcja = 0
+print('Witamy w symulatorze FEC!')
 while True:
-    isExistBC = 'packets' in globals()
-    isExistTC = 'controller' in globals()
-    Menu.wyswietl_menu(isExistBC, isExistBC, into)
-    wybor = Menu.wybor()
-    opcja += Menu.obliczenie_opcji(into, wybor)
-    if opcja == 0:
-        break
-    elif opcja == 900:
-        simulation()
-        opcja = 0
-    elif opcja == 100:
-        pass
-    elif opcja == 200:
-        pass
-    elif opcja == 300:
-        pass
-    else:
-        pass
+    path = input('Wybierz ścieżkę docelową: ')
+    name = input('Wybierz nazwę pliku docelowego: ')
+    try:
+        sizes = [eval(b) for b in input('Podaj rozmiary pakietów (x-y-z): ').split('-')]
+        mu = [eval(b) for b in input('Podaj listę mu (x-y-z): ').split('-')]
+        delta = [eval(b) for b in input('Podaj listę delta (x-y-z): ').split('-')]
+        rs = [eval(b) for b in input('Podaj listę nadmiarowości RS (x-y-z): ').split('-')]
+        message_size = eval(input('Podaj rozmiar wiadomości:'))
+        iterations = eval(input('Podaj liczbę iteracji:'))
+        print('Symulacja rozpoczęta...')
+        try:
+            simulation(path, name, sizes, mu, delta, message_size, iterations, rs)
+            print('Symulacja zakończona\n\n\n')
+        except:
+            print('Podano błędne dane!')
+    except:
+        'Błędne dane wejściowe!'
+
+    input('Naciśnij dowolny klawisz, aby rozpocząć nową symulację')
+    print('\n')
